@@ -37,20 +37,20 @@ class MedianGraph(object):
 			self.newest = convert_to_dt(record['created_time'])
 			self._remove_old_edges()
 
-	def build_graph(self, filename):
-		with open(filename) as f:
-			for line in f:
+	def build_graph(self, infile, outfile):
+		with open(infile, 'r') as i, open(outfile, 'w') as o:
+			for line in i:
 				record = json.loads(line)
 				self._add_valid_nodes(record)
 				median = calc_median(self.G)
-
-				print("Time: %s, %d Edges, Median: %f" % (self.newest, self.G.size(), median))
-				print(np.mean(nx.degree(self.G).values()))
+				o.write("%.2f" % (median) + '\n')
+				# print("Time: %s, %d Edges, Median: %.2f" % (self.newest, self.G.size(), median))
+				# print(np.mean(nx.degree(self.G).values()))
 				
 
 if __name__ == "__main__":
 	graph = MedianGraph()
-	graph.build_graph(sys.argv[1])
+	graph.build_graph(sys.argv[1], sys.argv[2])
 
 
 
